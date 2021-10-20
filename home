@@ -1,0 +1,187 @@
+import 'package:flutter/material.dart';
+import 'dart:math';
+
+class homepage extends StatefulWidget {
+  @override
+  _homepageState createState() => _homepageState();
+}
+
+class _homepageState extends State<homepage> {
+
+  var padrao_usuario = "images/padrao.png";
+  var padrao_maquina = "images/padrao.png";
+  String _resultado = "Resultado";
+  var escolhaUsuario = "Nenhum";
+  var _textobotao = "Jogar";
+  var op = 1;
+  Color color = Colors.deepPurple;
+
+
+  void suaescolha(escolha){
+      switch(escolha){
+        case "papel":
+          setState(() {
+            padrao_usuario = "images/papel.png";
+            escolhaUsuario = "papel";
+          });
+          break;
+        case "pedra":
+          setState(() {
+            padrao_usuario = "images/pedra.png";
+            escolhaUsuario = "pedra";
+          });
+          break;
+        case "tesoura":
+          setState(() {
+            padrao_usuario = "images/tesoura.png";
+            escolhaUsuario = "tesoura";
+          });
+          break;
+      }
+  }
+
+  void jogar(){
+    var opcoes = ["pedra", "papel", "tesoura"];
+    int escolha = Random().nextInt(3);
+    var escolhaApp = opcoes[escolha];
+
+
+    if(op == 1){
+      if("images/padrao.png" == padrao_usuario) {
+        setState(() {
+          _resultado = "Nenhuma opção selecionada";
+        });
+        return;
+      }
+
+      switch(escolhaApp){
+        case "pedra":
+          setState(() {
+            padrao_maquina = "images/pedra.png";
+          });
+          break;
+        case "papel":
+          setState(() {
+            padrao_maquina = "images/papel.png";
+          });
+          break;
+        case "tesoura":
+          setState(() {
+            padrao_maquina = "images/tesoura.png";
+          });
+          break;
+      }
+
+      if(escolhaUsuario == "pedra" && escolhaApp == "tesoura" ||
+          escolhaUsuario == "tesoura" && escolhaApp == "papel" ||
+          escolhaUsuario == "papel" && escolhaApp == "pedra") {
+        setState(() {
+          this._resultado = "você ganhou";
+        });
+
+      }
+      else if(escolhaApp == "pedra" && escolhaUsuario == "tesoura" ||
+          escolhaApp == "tesoura" && escolhaUsuario == "papel" ||
+          escolhaApp == "papel" && escolhaUsuario == "pedra") {
+        setState(() {
+          this._resultado = "você perdeu";
+        });
+      }
+      else {
+        setState(() {
+          this._resultado = "Empatou";
+        });
+      }
+
+      setState(() {
+        op = 0;
+        this._textobotao = "Jogar novamente";
+        color = Colors.blueGrey;
+      });
+
+    } else{
+      setState(() {
+        op = 1;
+        this._textobotao = "Jogar";
+        padrao_usuario = "images/padrao.png";
+        padrao_maquina = "images/padrao.png";
+        this._resultado = "Resultado";
+        color = Colors.deepPurple;
+      });
+    }
+
+
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("JoKenPo"),
+        backgroundColor: Colors.deepPurple,
+      ),
+      body: Container(
+          child: Column(
+            children: <Widget> [
+              //Padding das imagens de seleção e da máquina
+              Padding(padding: EdgeInsets.only(top: 30),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Image.asset(padrao_usuario),
+                  Image.asset("images/vs.png", width: 50),
+                  Image.asset(padrao_maquina)
+                ],
+              )
+              ),
+              //Pading de resultado do jogo
+              Padding(padding: EdgeInsets.only(top: 20),
+              child: Text(_resultado, style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                  fontStyle: FontStyle.italic
+              ))
+              ),
+              //Padding de texto para escolher a opção
+              const Padding(padding: EdgeInsets.only(top: 20),
+              child: Text("Escolha sua opção:", style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                fontStyle: FontStyle.italic
+              ))
+              ),
+              //Row com as opções para escolher
+              Padding(
+                padding: EdgeInsets.only(top:20, bottom: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () => suaescolha("pedra"),
+                      child: Image.asset("images/pedra.png", width: 100)
+                    ),
+                    GestureDetector(
+                      onTap: () => suaescolha("papel"),
+                      child: Image.asset("images/papel.png", width: 100)
+                    ),
+                    GestureDetector(
+                        onTap: () => suaescolha("tesoura"),
+                        child: Image.asset("images/tesoura.png", width: 100)
+                    ),
+
+                  ],
+                )
+              ),
+              //Botão de ação
+              ElevatedButton(onPressed: jogar, child: Text(_textobotao), style: ElevatedButton.styleFrom(
+                primary: color,
+                minimumSize: Size(170, 60)
+              ))
+            ],
+          )
+      ),
+    );
+  }
+}
+
